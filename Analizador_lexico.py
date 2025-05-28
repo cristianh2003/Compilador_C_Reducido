@@ -17,9 +17,6 @@ class AnalizadorLexico(Lexer):
     }
 
     # TOKENS
-    # En SLY, 'tokens' es un conjunto (set) de los NOMBRES de los tokens.
-    # Estos nombres deben coincidir con las variables de clase para reglas simples,
-    # o los nombres de los métodos para reglas con acciones.
     tokens = {
         # Nombres de tokens que se definirán como variables/métodos
         'ID', 'INTEGER_CONSTANT', 'CHAR_CONSTANT', 'STRING_CONSTANT',
@@ -29,17 +26,12 @@ class AnalizadorLexico(Lexer):
         'I_PAREN', 'D_PAREN', 'I_LLAVE', 'D_LLAVE',
         'COMA', 'PUNTO_COMA', 'PUNTOS_SUSPENSIVOS', #'PORCENTAJE',
 
-        # Añadimos los valores del diccionario 'reserved' al conjunto de tokens
-        # ya que estos también son tipos de token válidos que la regla ID puede generar.
         *reserved.values()
     }
 
-        # COMENTARIOS Y ESPACIOS
-
-
-    # Ignorar comentarios tipo C /* ... */
-    # Se utilizan los flags inline de modo DOTALL ((?s)) para permitir que el . incluya saltos de línea.
-    ignore_comment = r'(?s)/\*.*?\*/'
+        
+    # COMENTARIOS Y ESPACIOS
+    ignore_comment = r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/'
 
     # String que contiene caracteres ignorados (espacios y tabulaciones)
     ignore = ' \t\r' 
@@ -51,9 +43,9 @@ class AnalizadorLexico(Lexer):
     op_suma            = r'\+|-'
     op_mul             = r'\*|/'
     op_igual           = r'==|!='
-    op_relacional      = r'<|<=|>=|>' # Corresponds to ' < ' | ' <= ' | ' >= ' | ' > ' as per user prompt; SLY's longest match handles precedence.
+    op_relacional      = r'<|<=|>=|>'
 
-    # Remaining tokens from the original selection
+  
     ASIGNACION         = r'='
     I_PAREN            = r'\('
     D_PAREN            = r'\)'
@@ -62,12 +54,10 @@ class AnalizadorLexico(Lexer):
     COMA               = r','
     PUNTO_COMA         = r';'
     PUNTOS_SUSPENSIVOS = r'\.\.\.'
-    #COMILLAS =            r'\"' # Kept as commented from original selection
+    #COMILLAS =            r'\"' 
     #PORCENTAJE         = r'%'
 
     # REGLAS CON CÓDIGO
-    # Se definen como métodos. El nombre del método es el nombre del token.
-    # La expresión regular se pasa al decorador @_()
 
     @_(r'[a-zA-Z_][a-zA-Z0-9_]*')
     def ID(self, t):
@@ -88,7 +78,7 @@ class AnalizadorLexico(Lexer):
     def STRING_CONSTANT(self, t):
         # El valor ya es la cadena completa, incluyendo las comillas.
         # Si quieres quitar las comillas del valor del token:
-        # t.value = t.value[1:-1] # Esto puede necesitar más lógica si hay escapes
+        t.value = t.value[1:-1] # Esto puede necesitar más lógica si hay escapes
         return t
 
     # Regla para manejar nuevas líneas y contar números de línea

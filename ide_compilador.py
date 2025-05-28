@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext, messagebox
 from Analizador_lexico import AnalizadorLexico
-from Analizador_sintactico import AnalizadorSintactico
+from Analizador_sintactico_2 import AnalizadorSintactico
 
 class IDECompilador(tk.Tk):
     def __init__(self):

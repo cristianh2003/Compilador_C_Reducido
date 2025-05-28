@@ -21,22 +21,25 @@ class AnalizadorSintactico(Parser):
     )
 
     # -- 1
+    @_('unidad_compilacion declaracion_externa')
+    def unidad_compilacion(self, p):
+        return p.unidad_compilacion + [p.declaracion_externa]
+
     @_('declaracion_externa')
     def unidad_compilacion(self, p):
         return [p.declaracion_externa]  
     
-    @_('unidad_compilacion declaracion_externa')
-    def unidad_compilacion(self, p):
-        return p.unidad_compilacion + [p.declaracion_externa]
+    
     
     # -- 2
+    @_('declaracion')
+    def declaracion_externa(self, p):
+        return p.declaracion
+
     @_('definicion_funcion')
     def declaracion_externa(self, p):
         return p.definicion_funcion
     
-    @_('declaracion')
-    def declaracion_externa(self, p):
-        return p.declaracion
     
     # -- 3
     @_('encabezado_def_funcion cuerpo_funcion')
@@ -48,9 +51,9 @@ class AnalizadorSintactico(Parser):
     def encabezado_def_funcion(self, p):
         return ('encabezado_funcion', p.tipo_retorno, p.ID, p.def_parametros)
     
-    @_('tipo_retorno ID I_PAREN D_PAREN') # Regla extra para funciones sin parámetros
-    def encabezado_def_funcion(self, p):
-        return ('encabezado_funcion', p.tipo_retorno, p.ID, 'void')
+    #@_('tipo_retorno ID I_PAREN D_PAREN') # Regla extra para funciones sin parámetros
+    #def encabezado_def_funcion(self, p):
+    #    return ('encabezado_funcion', p.tipo_retorno, p.ID, 'void')
 
     # -- 5
     @_('tipo')
@@ -69,23 +72,26 @@ class AnalizadorSintactico(Parser):
 
     
     # -- 6
+    @_('VOID')
+    def def_parametros(self, p):
+        return 'void'
+
     @_('lista_def_parametros')
     def def_parametros(self, p):
         return p.lista_def_parametros
 
-    @_('VOID')
-    def def_parametros(self, p):
-        return 'void'
+    
     
     # -- 7
-    @_('tipo ID')
-    def lista_def_parametros(self, p):
-        return [(p.tipo, p.ID)]
-
     @_('lista_def_parametros COMA tipo ID')
     def lista_def_parametros(self, p):
         p.lista_def_parametros.append((p.tipo, p.ID))
         return p.lista_def_parametros
+
+    @_('tipo ID')
+    def lista_def_parametros(self, p):
+        return [(p.tipo, p.ID)]
+    
         
     # -- 8    
     @_('I_LLAVE declaraciones lista_declaraciones D_LLAVE')
@@ -93,13 +99,15 @@ class AnalizadorSintactico(Parser):
         return ('cuerpo_funcion', p.declaraciones, p.lista_declaraciones)
 
     # -- 9
+    @_('empty')
+    def declaraciones(self, p):
+        return []
+
     @_('declaraciones declaracion')
     def declaraciones(self, p):
         return p.declaraciones + [p.declaracion]
 
-    @_('empty')
-    def declaraciones(self, p):
-        return []
+    
 
     @_('')  # Regla para λ (lambda) o vacío
     def empty(self, p):
