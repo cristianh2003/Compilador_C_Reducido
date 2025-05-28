@@ -7,7 +7,7 @@ from PyQt6.QtCore import Qt, QRect, QSize
 import sys
 
 from Analizador_lexico import AnalizadorLexico
-from Analizador_sintactico import AnalizadorSintactico
+from Analizador_sintactico_2 import AnalizadorSintactico
 
 
 class LineNumberArea(QWidget):

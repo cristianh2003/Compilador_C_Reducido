@@ -1,7 +1,7 @@
 # test analizador lexico
 
 from Analizador_lexico import AnalizadorLexico
-from Analizador_sintactico import AnalizadorSintactico
+from Analizador_sintactico_2 import AnalizadorSintactico
 
 if __name__ == '__main__':
     data = """ 
